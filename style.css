@@ -5,6 +5,12 @@
   box-sizing: border-box;
 }
 
+/* Smooth scrolling for entire document */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   background: #fafafa;
   color: #1a1a1a;
@@ -12,6 +18,9 @@ body {
   line-height: 1.6;
   font-size: 18px;
   overflow-x: hidden;
+  /* Enable smooth scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
 /* Global image optimization */
@@ -50,7 +59,10 @@ img {
   object-fit: cover;
   object-position: center;
   filter: brightness(0.95) contrast(1.05);
+  /* Smooth transition for any transform changes */
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
   /* Maintain landscape on desktop */
+  transform-origin: center center;
 }
 
 .landing-background .exif-data {
@@ -837,26 +849,47 @@ footer p {
     display: block;
   }
 
+  /* ============================================
+     MOBILE BACKGROUND IMAGE ROTATION (Portrait Mode)
+     ============================================
+     Rotates all background images counter-clockwise (-90deg) 
+     on screens smaller than 768px for portrait orientation.
+     Only affects background images, not content.
+     ============================================ */
   .landing-background {
     position: relative;
     min-height: 100vh;
     max-height: none;
-    aspect-ratio: 9 / 16; /* Portrait aspect ratio for mobile */
     width: 100%;
     overflow: hidden;
+    /* Ensure container doesn't break layout */
+    transform: none;
   }
 
   .landing-background img {
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
+    /* 
+     * COUNTER-CLOCKWISE ROTATION: -90 degrees
+     * This rotates the background image to portrait mode
+     * while keeping all content (text, windows) unaltered
+     */
+    transform: rotate(-90deg) scale(1.5);
+    /* Smooth transition for rotation */
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                filter 0.3s ease;
+    /* Center the rotation */
+    transform-origin: center center;
+    /* Ensure image covers properly after rotation */
+    width: 177.78%; /* Adjust to compensate for rotation */
+    height: 177.78%;
+    left: -38.89%; /* Center the enlarged rotated image */
+    top: -38.89%;
+    position: absolute;
     object-fit: cover;
     object-position: center center;
     display: block;
-    aspect-ratio: 9 / 16; /* Force portrait orientation on mobile */
   }
 
-  /* Stack elements vertically on mobile */
+  /* Stack elements vertically on mobile with smooth scrolling */
   .landing {
     flex-direction: column;
     justify-content: flex-start;
@@ -864,6 +897,15 @@ footer p {
     padding-top: 20px;
     padding-bottom: 40px;
     min-height: auto;
+    /* Smooth scrolling for mobile */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Enable smooth scrolling for all sections on mobile */
+  section {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 
   .landing-content {
@@ -1093,26 +1135,53 @@ footer p {
   .lastfm-content {
     overflow-x: hidden;
     word-wrap: break-word;
+    /* Smooth scrolling for all content containers */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ============================================
+     SMOOTH SCROLLING FOR MOBILE
+     ============================================
+     Ensures all scrollable elements scroll smoothly
+     with momentum on mobile devices
+     ============================================ */
+  .landing-text-wrapper,
+  .social-content,
+  .lastfm-content {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    /* Smooth momentum scrolling on iOS */
+    overscroll-behavior: contain;
   }
 }
 
 /* Small mobile phones */
 @media (max-width: 480px) {
-  /* Ensure images maintain portrait orientation on small screens */
+  /* ============================================
+     SMALL MOBILE: Background Image Rotation
+     ============================================
+     Maintains counter-clockwise rotation for very small screens
+     ============================================ */
   .landing-background {
-    aspect-ratio: 9 / 16;
     min-height: auto;
     height: 100vh;
     max-height: 100vh;
+    overflow: hidden;
   }
 
   .landing-background img {
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
+    /* Maintain counter-clockwise rotation on small screens */
+    transform: rotate(-90deg) scale(1.5);
+    width: 177.78%;
+    height: 177.78%;
+    left: -38.89%;
+    top: -38.89%;
+    position: absolute;
     object-fit: cover;
     object-position: center center;
-    aspect-ratio: 9 / 16;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   img {
