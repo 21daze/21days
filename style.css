@@ -50,8 +50,7 @@ img {
   object-fit: cover;
   object-position: center;
   filter: brightness(0.95) contrast(1.05);
-  /* Maintain aspect ratio on mobile */
-  aspect-ratio: auto;
+  /* Maintain landscape on desktop */
 }
 
 .landing-background .exif-data {
@@ -842,16 +841,19 @@ footer p {
     position: relative;
     min-height: 100vh;
     max-height: none;
+    aspect-ratio: 9 / 16; /* Portrait aspect ratio for mobile */
+    width: 100%;
+    overflow: hidden;
   }
 
   .landing-background img {
     width: 100%;
-    height: auto;
-    min-height: 100vh;
-    max-height: none;
+    height: 100%;
+    min-height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: center center;
     display: block;
+    aspect-ratio: 9 / 16; /* Force portrait orientation on mobile */
   }
 
   /* Stack elements vertically on mobile */
@@ -870,12 +872,13 @@ footer p {
     top: auto;
     right: auto;
     left: auto;
-    margin: 20px auto;
+    margin: 30px auto;
     max-width: 95%;
     width: 95%;
     max-height: none;
     height: auto;
     z-index: 10;
+    padding: 0;
   }
 
   .relearning-window,
@@ -898,22 +901,47 @@ footer p {
     top: auto;
     right: auto;
     left: auto;
-    margin: 20px auto;
+    margin: 30px auto;
     max-height: none;
     height: auto;
   }
 
   .social-content {
-    max-height: 500px;
+    max-height: 400px;
+    overflow-y: auto;
   }
 
   .lastfm-content {
-    max-height: 500px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 12px;
   }
 
   .landing-text-wrapper {
-    padding: 16px;
+    padding: 20px 16px;
     min-height: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  /* Ensure text never gets cut off */
+  .landing-text {
+    padding: 0 8px;
+    margin: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.7;
+  }
+
+  .landing-text p {
+    margin-bottom: 18px;
+    padding: 0;
+  }
+
+  .landing-text a {
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .landing-title {
@@ -1033,12 +1061,26 @@ footer p {
     padding: 30px 20px;
   }
 
-  /* Ensure windows don't overlap - stack vertically with spacing */
-  .landing-content,
-  .social-window,
+  /* Ensure windows don't overlap - stack vertically with equal spacing */
+  .landing-content {
+    margin-bottom: 40px;
+    margin-top: 30px;
+  }
+
+  .social-window {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
   .relearning-window,
   .relearning-hear-window {
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    margin-top: 40px;
+  }
+
+  /* Ensure equal spacing between about-me and Last.fm widget */
+  .landing-content + .social-window {
+    margin-top: 40px;
   }
 
   /* Prevent horizontal overflow for containers */
@@ -1056,13 +1098,21 @@ footer p {
 
 /* Small mobile phones */
 @media (max-width: 480px) {
-  /* Ensure images maintain aspect ratio on small screens */
+  /* Ensure images maintain portrait orientation on small screens */
+  .landing-background {
+    aspect-ratio: 9 / 16;
+    min-height: auto;
+    height: 100vh;
+    max-height: 100vh;
+  }
+
   .landing-background img {
     width: 100%;
-    height: auto;
-    min-height: 50vh;
-    max-height: 80vh;
+    height: 100%;
+    min-height: 100%;
     object-fit: cover;
+    object-position: center center;
+    aspect-ratio: 9 / 16;
   }
 
   img {
@@ -1082,11 +1132,31 @@ footer p {
   .relearning-hear-window {
     max-width: 98%;
     width: 98%;
-    margin: 15px auto;
+    margin: 20px auto;
+  }
+
+  /* Equal spacing between about-me and Last.fm on small screens */
+  .landing-content {
+    margin-bottom: 30px;
+    margin-top: 20px;
+  }
+
+  .social-window {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  .landing-content + .social-window {
+    margin-top: 30px;
   }
 
   .landing-text-wrapper {
-    padding: 12px;
+    padding: 16px 14px;
+  }
+
+  .landing-text {
+    padding: 0 6px;
+    line-height: 1.6;
   }
 
   .landing-title {
