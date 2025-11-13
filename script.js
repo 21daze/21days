@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const onMouseMove = function(moveEvent) {
         const deltaX = Math.abs(moveEvent.clientX - startMouseX);
         const deltaY = Math.abs(moveEvent.clientY - startMouseY);
-        
+
         if (deltaX > 5 || deltaY > 5) {
           mouseMovedRelearning = true;
           
@@ -522,6 +522,92 @@ document.addEventListener('DOMContentLoaded', function() {
       
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
+    });
+  }
+
+  // Touch-friendly dropdown for mobile devices
+  const dropdownToggle = document.querySelector('.dropdown-toggle');
+  const dropdown = document.querySelector('.dropdown');
+  
+  if (dropdownToggle && dropdown) {
+    dropdownToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      dropdown.classList.toggle('active');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+  }
+
+  // ============================================
+  // Touch-friendly EXIF metadata interactions
+  // ============================================
+  // Converts hover-style metadata to touch-friendly tap-to-toggle interactions
+  // Works on all touch devices and persists after page updates
+  // ============================================
+  
+  // Detect if device supports touch
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  if (isTouchDevice) {
+    // Handle touch events for EXIF data on background images
+    const landingBackgrounds = document.querySelectorAll('.landing-background');
+    landingBackgrounds.forEach(background => {
+      const exifData = background.querySelector('.exif-data');
+      if (exifData) {
+        let touchStartTime = 0;
+        let touchMoved = false;
+        
+        background.addEventListener('touchstart', function(e) {
+          touchStartTime = Date.now();
+          touchMoved = false;
+        }, { passive: true });
+        
+        background.addEventListener('touchmove', function(e) {
+          touchMoved = true;
+        }, { passive: true });
+        
+        background.addEventListener('touchend', function(e) {
+          const touchDuration = Date.now() - touchStartTime;
+          // Toggle EXIF on tap (not drag) - tap is < 300ms and no movement
+          if (!touchMoved && touchDuration < 300) {
+            e.preventDefault();
+            exifData.classList.toggle('touch-visible');
+          }
+        }, { passive: false });
+      }
+    });
+
+    // Handle touch events for EXIF data on photo figures
+    const photoFigures = document.querySelectorAll('figure.photo');
+    photoFigures.forEach(figure => {
+      const exifData = figure.querySelector('.exif-data');
+      if (exifData) {
+        let touchStartTime = 0;
+        let touchMoved = false;
+        
+        figure.addEventListener('touchstart', function(e) {
+          touchStartTime = Date.now();
+          touchMoved = false;
+        }, { passive: true });
+        
+        figure.addEventListener('touchmove', function(e) {
+          touchMoved = true;
+        }, { passive: true });
+        
+        figure.addEventListener('touchend', function(e) {
+          const touchDuration = Date.now() - touchStartTime;
+          // Toggle EXIF on tap (not drag) - tap is < 300ms and no movement
+          if (!touchMoved && touchDuration < 300) {
+            e.preventDefault();
+            exifData.classList.toggle('touch-visible');
+          }
+        }, { passive: false });
+      }
     });
   }
 });

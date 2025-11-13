@@ -3,12 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>daylessday</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
   <header>
     <h1>daylessday</h1>
+    <nav class="site-nav">
+      <a href="#landing">home</a>
+      <a href="https://21.bearblog.dev/blog/">journal</a>
+      <a href="blog.html">blog</a>
+      <div class="dropdown">
+        <a href="#" class="dropdown-toggle">creative</a>
+        <div class="dropdown-menu">
+          <a href="https://www.flickr.com/-21" target="_blank">flickr</a>
+          <a href="https://www.instagram.com/k0reless/" target="_blank">instagram</a>
+        </div>
+      </div>
+    </nav>
   </header>
 
   <!-- Landing Page -->
@@ -152,13 +167,27 @@
           <div class="sound-quote">
             <p class="quote-line-1">Music is sound;</p>
             <p class="quote-line-2">sound is noise;</p>
-            <p class="quote-line-3">and everything — & nothing — is noise.</p>
+            <p class="quote-line-3">and everything - & nothing - is noise.</p>
           </div>
           
           <p class="read-more"><a href="https://21.bearblog.dev/relearning-to-hear-pt1/" target="_blank">Read it here →</a></p>
         </div>
       </div>
+      <div class="scroll-indicator">
+        <a href="#opinion-page" class="scroll-link">↓</a>
+      </div>
     </div>
+  </section>
+
+  <!-- Opinion Page -->
+  <section id="opinion-page" class="landing opinion-section">
+    <div class="landing-background">
+      <img src="Assets/Opinon-bg.jpg" alt="35mm scan with etched metal details" loading="lazy">
+      <div class="exif-data">
+        <span class="exif-banner">DATE: 2012 | OLYMPUS OM-1 | ZUIKO 35mm f/2.8 | KODAK VISION3 800T | 6774×4492 | sRGB</span>
+      </div>
+    </div>
+    <a id="enter-noise-journal" href="blog.html">ENTER NOISE JOURNAL</a>
   </section>
 
   <footer>

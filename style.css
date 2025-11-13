@@ -1,3 +1,21 @@
+/* ============================================
+   MOBILE RESPONSIVENESS SYSTEM
+   ============================================
+   This stylesheet implements a comprehensive mobile responsiveness system:
+   
+   1. All pages/sections wrapped in .landing containers
+   2. Background images use object-fit: contain, centered, no-repeat
+   3. All content elements positioned relative to their container
+   4. Overflow: hidden applied to containers to prevent spillage
+   5. Touch-friendly EXIF interactions via JavaScript
+   6. Desktop styles and hover behaviors preserved
+   7. All changes documented for persistence
+   
+   Mobile breakpoints:
+   - ≤768px: Tablet and mobile devices
+   - ≤480px: Small mobile phones
+   ============================================ */
+
 /* Reset & Base */
 * {
   margin: 0;
@@ -28,9 +46,40 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+  box-sizing: border-box; /* Ensure images stay within containers */
+}
+
+/* ============================================
+   GLOBAL CONTENT ELEMENT STYLES
+   ============================================
+   All content elements (buttons, photos, text) resize proportionally
+   and stay within their container bounds
+   ============================================ */
+button,
+.photo,
+.content-element {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* Ensure all interactive elements are properly contained */
+button {
+  overflow: visible;
+  white-space: nowrap;
+}
+
+figure.photo {
+  box-sizing: border-box;
+  overflow: hidden; /* Contain photo and EXIF data */
 }
 
 /* Landing Page */
+/* ============================================
+   PAGE CONTAINER STRUCTURE
+   ============================================
+   Each page/section is wrapped in .landing container
+   Backgrounds fit viewport, content elements stay within
+   ============================================ */
 .landing {
   position: relative;
   width: 100%;
@@ -39,7 +88,7 @@ img {
   align-items: center;
   justify-content: flex-end;
   padding: 0;
-  overflow: hidden;
+  overflow: hidden; /* Prevent content from spilling out */
 }
 
 .landing-background {
@@ -49,15 +98,18 @@ img {
   width: 100%;
   height: 100%;
   z-index: 1;
-  overflow: hidden;
+  overflow: hidden; /* Contain background image */
 }
 
 .landing-background img {
   width: 100%;
   height: 100%;
   max-width: 100%;
-  object-fit: cover;
-  object-position: center;
+  max-height: 100%;
+  object-fit: contain; /* Fit viewport without cropping */
+  object-position: center center;
+  background-repeat: no-repeat;
+  background-position: center;
   filter: brightness(0.95) contrast(1.05);
   /* Smooth transition for any transform changes */
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
@@ -72,11 +124,24 @@ img {
   z-index: 2;
 }
 
-.landing-content {
+/* ============================================
+   CONTENT ELEMENTS
+   ============================================
+   All content elements positioned relative to .landing container
+   Stay within container bounds, resize proportionally on mobile
+   ============================================ */
+.landing-content,
+.relearning-window,
+.relearning-hear-window {
   position: absolute;
   z-index: 2;
-  max-width: 600px;
-  width: 600px;
+  overflow: hidden; /* Contain content within element */
+  box-sizing: border-box; /* Ensure element stays within container */
+}
+
+.landing-content {
+  max-width: 480px;
+  width: 480px;
   top: 100px;
   right: 8%;
   padding: 0;
@@ -88,8 +153,7 @@ img {
   box-shadow: 
     0 4px 12px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  max-height: 90vh;
-  overflow: hidden;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
   cursor: default;
@@ -123,13 +187,14 @@ img {
     0 4px 12px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
   max-height: 420px;
-  overflow: hidden;
+  overflow: hidden; /* Contain content within element */
   display: flex;
   flex-direction: column;
   cursor: default;
   user-select: none;
   transition: height 0.3s ease, max-height 0.3s ease;
   will-change: transform;
+  box-sizing: border-box; /* Ensure element stays within container */
 }
 
 .social-window.minimized {
@@ -351,9 +416,107 @@ img {
   min-height: 100vh;
 }
 
+.opinion-section {
+  min-height: 100vh;
+}
+
+/* Enter Noise Journal Button - Masking Tape Style */
+/* Content element: positioned relative to .landing container */
+#enter-noise-journal {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  font-family: 'Permanent Marker', 'Comic Sans MS', 'Marker Felt', cursive;
+  font-size: 24px;
+  font-weight: 400;
+  color: #1a1a1a;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px 20px;
+  box-sizing: border-box; /* Ensure button stays within container */
+  max-width: calc(100% - 80px); /* Prevent overflow on small screens */
+  /* Realistic masking tape background */
+  background: 
+    linear-gradient(135deg, #f5f5dc 0%, #f0f0e0 50%, #f5f5dc 100%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+  background-size: 100% 100%, 8px 100%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  transform: translateY(-50%) rotate(-1.5deg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Masking tape torn edge effect */
+#enter-noise-journal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -2px;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to right, 
+    rgba(245, 245, 220, 0.8) 0%,
+    rgba(245, 245, 220, 0.4) 50%,
+    transparent 100%
+  );
+  border-radius: 2px 0 0 2px;
+}
+
+#enter-noise-journal::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to left, 
+    rgba(245, 245, 220, 0.8) 0%,
+    rgba(245, 245, 220, 0.4) 50%,
+    transparent 100%
+  );
+  border-radius: 0 2px 2px 0;
+}
+
+#enter-noise-journal:hover,
+#enter-noise-journal:focus {
+  color: #ff6b35;
+  transform: translateY(-50%) rotate(-0.5deg) scale(1.05);
+  /* Film halation effect - warm orange/red glow */
+  text-shadow: 
+    0 0 8px rgba(255, 107, 53, 0.8),
+    0 0 16px rgba(255, 107, 53, 0.6),
+    0 0 24px rgba(255, 107, 53, 0.4),
+    0 0 32px rgba(255, 107, 53, 0.2),
+    0 0 40px rgba(255, 107, 53, 0.1);
+  box-shadow: 
+    0 3px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 0 20px rgba(255, 107, 53, 0.3),
+    0 0 40px rgba(255, 107, 53, 0.15),
+    0 0 60px rgba(255, 107, 53, 0.1);
+}
+
 .relearning-window {
   top: 100px;
   right: 8%;
+  /* Inherits overflow: hidden and box-sizing from .landing-content */
 }
 
 .relearning-window .landing-title,
@@ -368,6 +531,7 @@ img {
 .relearning-hear-window {
   top: 100px;
   right: 8%;
+  /* Inherits overflow: hidden and box-sizing from .landing-content */
 }
 
 /* Sound typography - experimental, rhythm-based */
@@ -671,15 +835,106 @@ header {
   backdrop-filter: blur(10px);
   z-index: 200;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 header h1 {
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 2px;
-  text-align: center;
   text-transform: lowercase;
   color: #1a1a1a;
+  margin: 0;
+}
+
+.site-nav {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.site-nav a {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: lowercase;
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.site-nav a:hover,
+.site-nav a:focus {
+  opacity: 0.7;
+}
+
+/* Dropdown Menu */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 2px;
+  background: rgba(250, 250, 250, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 120px;
+  z-index: 1000;
+  padding: 8px 0;
+  /* Extend upward to bridge hover gap */
+  padding-top: 12px;
+  margin-top: -8px;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: lowercase;
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+/* First menu item extends upward to bridge hover gap */
+.dropdown-menu a:first-child {
+  padding-top: 12px;
+  margin-top: -4px;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu a:focus {
+  background: rgba(0, 0, 0, 0.05);
+  opacity: 1;
+}
+
+.dropdown:hover .dropdown-menu,
+.dropdown:focus-within .dropdown-menu {
+  display: block;
+}
+
+/* Touch device support for dropdown */
+@media (hover: none) {
+  .dropdown.active .dropdown-menu {
+    display: block;
+  }
 }
 
 /* Main Content */
@@ -746,6 +1001,31 @@ figure.photo:hover .exif-data,
 .landing-background:hover .exif-data {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Touch-friendly EXIF interactions */
+/* Make EXIF data areas touch-friendly */
+@media (hover: none) {
+  .landing-background,
+  figure.photo {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+  
+  /* On touch devices, EXIF starts hidden but can be toggled */
+  .landing-background .exif-data,
+  figure.photo .exif-data {
+    /* Keep default hidden state, toggle via JavaScript */
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+/* Touch-friendly EXIF toggle class (for JavaScript) */
+.exif-data.touch-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .exif-banner {
@@ -855,13 +1135,19 @@ footer p {
      Rotates all background images counter-clockwise (-90deg) 
      on screens smaller than 768px for portrait orientation.
      Only affects background images, not content.
+     
+     IMPORTANT: Background images fit viewport without zooming or cropping.
+     Uses object-fit: contain with viewport-based dimensions (100vh x 100vw)
+     to ensure full image visibility on all mobile devices.
      ============================================ */
   .landing-background {
-    position: relative;
-    min-height: 100vh;
-    max-height: none;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
     overflow: hidden;
+    z-index: 1;
     /* Ensure container doesn't break layout */
     transform: none;
   }
@@ -869,60 +1155,84 @@ footer p {
   .landing-background img {
     /* 
      * COUNTER-CLOCKWISE ROTATION: -90 degrees
-     * This rotates the background image to portrait mode
-     * while keeping all content (text, windows) unaltered
+     * Fits viewport without zooming in or cropping
+     * Uses viewport dimensions to ensure full image visibility
      */
-    transform: rotate(-90deg) scale(1.5);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100vh;
+    height: 100vw;
+    max-width: none;
+    max-height: none;
+    min-width: 0;
+    min-height: 0;
+    object-fit: contain;
+    object-position: center center;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center center;
     /* Smooth transition for rotation */
     transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 filter 0.3s ease;
-    /* Center the rotation */
-    transform-origin: center center;
-    /* Ensure image covers properly after rotation */
-    width: 177.78%; /* Adjust to compensate for rotation */
-    height: 177.78%;
-    left: -38.89%; /* Center the enlarged rotated image */
-    top: -38.89%;
-    position: absolute;
-    object-fit: cover;
-    object-position: center center;
     display: block;
+    /* Ensure image doesn't overflow or zoom */
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
+  /* ============================================
+     MOBILE: Container and Content Resizing
+     ============================================
+     All content elements resize proportionally on mobile
+     Elements stay within .landing container bounds
+     ============================================ */
   /* Stack elements vertically on mobile with smooth scrolling */
   .landing {
+    position: relative;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     padding-top: 20px;
     padding-bottom: 40px;
-    min-height: auto;
+    min-height: 100vh;
     /* Smooth scrolling for mobile */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    z-index: 2;
+    overflow: hidden; /* Ensure all content stays within container */
   }
 
   /* Enable smooth scrolling for all sections on mobile */
   section {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    position: relative; /* Ensure proper containment */
   }
 
+  /* Content elements: proportional resizing on mobile */
   .landing-content {
     position: relative;
     transform: none;
     top: auto;
     right: auto;
     left: auto;
-    margin: 30px auto;
-    max-width: 95%;
-    width: 95%;
-    max-height: none;
+    margin: 20px auto;
+    max-width: 92%;
+    width: 92%;
+    max-height: 85vh;
     height: auto;
-    z-index: 10;
+    z-index: 5;
     padding: 0;
+    backdrop-filter: blur(6px);
+    background-color: rgba(20, 20, 20, 0.35);
+    border-radius: 8px;
+    overflow: hidden; /* Contain content */
+    box-sizing: border-box; /* Ensure proper sizing */
   }
 
+  /* Relearning windows: proportional resizing */
   .relearning-window,
   .relearning-hear-window {
     position: relative;
@@ -934,8 +1244,15 @@ footer p {
     width: 95%;
     max-height: none;
     height: auto;
+    z-index: 5;
+    backdrop-filter: blur(6px);
+    background-color: rgba(20, 20, 20, 0.35);
+    border-radius: 8px;
+    overflow: hidden; /* Contain content */
+    box-sizing: border-box; /* Ensure proper sizing */
   }
 
+  /* Social window: proportional resizing */
   .social-window {
     position: relative;
     max-width: 95%;
@@ -946,12 +1263,18 @@ footer p {
     margin: 30px auto;
     max-height: none;
     height: auto;
+    z-index: 5;
+    backdrop-filter: blur(6px);
+    background-color: rgba(20, 20, 20, 0.35);
+    border-radius: 8px;
+    overflow: hidden; /* Contain content */
+    box-sizing: border-box; /* Ensure proper sizing */
   }
 
   .social-content {
     max-height: 400px;
     overflow-y: auto;
-  }
+}
 
   .lastfm-content {
     max-height: 380px;
@@ -959,21 +1282,29 @@ footer p {
     padding: 12px;
   }
 
+  /* Text elements: proportional resizing and containment */
   .landing-text-wrapper {
-    padding: 20px 16px;
+    padding: 16px 14px;
     min-height: auto;
     overflow-wrap: break-word;
     word-wrap: break-word;
+    max-height: calc(85vh - 50px);
+    overflow-y: auto;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    box-sizing: border-box; /* Ensure proper sizing */
   }
 
   /* Ensure text never gets cut off */
   .landing-text {
-    padding: 0 8px;
+    padding: 0 6px;
     margin: 0;
     overflow-wrap: break-word;
     word-wrap: break-word;
     hyphens: auto;
-    line-height: 1.7;
+    line-height: 1.6;
+    font-size: 11px;
+    box-sizing: border-box; /* Ensure proper sizing */
+    max-width: 100%; /* Prevent overflow */
   }
 
   .landing-text p {
@@ -1025,11 +1356,15 @@ footer p {
     font-size: 11px;
   }
 
+  /* Scroll indicator: contained within landing container */
   .scroll-indicator {
     position: relative;
     bottom: auto;
     margin: 30px auto;
     display: block;
+    z-index: 10;
+    box-sizing: border-box;
+    max-width: 100%; /* Prevent overflow */
   }
 
   .scroll-link {
@@ -1040,11 +1375,30 @@ footer p {
   }
 
   header {
-    padding: 20px 0;
+    padding: 20px 16px;
+    flex-direction: row;
   }
 
   header h1 {
     font-size: 12px;
+  }
+
+  .site-nav {
+    gap: 16px;
+  }
+
+  .site-nav a {
+    font-size: 12px;
+  }
+
+  .dropdown-menu {
+    right: 0;
+    min-width: 100px;
+  }
+
+  .dropdown-menu a {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 
   main {
@@ -1101,6 +1455,23 @@ footer p {
 
   footer {
     padding: 30px 20px;
+  }
+
+  /* Enter Noise Journal Button - Mobile (Bottom Position) */
+  #enter-noise-journal {
+    left: auto;
+    right: 20px;
+    top: auto;
+    bottom: 30px;
+    transform: rotate(-1.5deg);
+    font-size: 20px;
+    padding: 10px 16px;
+    z-index: 10;
+  }
+
+  #enter-noise-journal:hover,
+  #enter-noise-journal:focus {
+    transform: rotate(-0.5deg) scale(1.05);
   }
 
   /* Ensure windows don't overlap - stack vertically with equal spacing */
@@ -1162,26 +1533,42 @@ footer p {
   /* ============================================
      SMALL MOBILE: Background Image Rotation
      ============================================
-     Maintains counter-clockwise rotation for very small screens
+     Maintains counter-clockwise rotation for very small screens.
+     
+     IMPORTANT: Background images fit viewport without zooming or cropping.
+     Uses object-fit: contain with viewport-based dimensions (100vh x 100vw)
+     to ensure full image visibility on all mobile devices.
      ============================================ */
   .landing-background {
-    min-height: auto;
-    height: 100vh;
-    max-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+    z-index: 1;
   }
 
   .landing-background img {
-    /* Maintain counter-clockwise rotation on small screens */
-    transform: rotate(-90deg) scale(1.5);
-    width: 177.78%;
-    height: 177.78%;
-    left: -38.89%;
-    top: -38.89%;
+    /* Maintain counter-clockwise rotation on small screens - fit viewport without zoom */
     position: absolute;
-    object-fit: cover;
+    left: 50%;
+    top: 50%;
+    width: 100vh;
+    height: 100vw;
+    max-width: none;
+    max-height: none;
+    min-width: 0;
+    min-height: 0;
+    object-fit: contain;
     object-position: center center;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center center;
     transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Ensure image doesn't overflow or zoom */
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   img {
@@ -1199,9 +1586,10 @@ footer p {
   .social-window,
   .relearning-window,
   .relearning-hear-window {
-    max-width: 98%;
-    width: 98%;
-    margin: 20px auto;
+    max-width: 94%;
+    width: 94%;
+    margin: 18px auto;
+    max-height: 85vh;
   }
 
   /* Equal spacing between about-me and Last.fm on small screens */
@@ -1219,13 +1607,21 @@ footer p {
     margin-top: 30px;
   }
 
+  /* Text elements: small mobile - proportional resizing */
   .landing-text-wrapper {
-    padding: 16px 14px;
+    padding: 14px 12px;
+    max-height: calc(85vh - 45px);
+    overflow-y: auto;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    box-sizing: border-box; /* Ensure proper sizing */
   }
 
   .landing-text {
-    padding: 0 6px;
-    line-height: 1.6;
+    font-size: 10px;
+    line-height: 1.5;
+    padding: 0 4px;
+    box-sizing: border-box; /* Ensure proper sizing */
+    max-width: 100%; /* Prevent overflow */
   }
 
   .landing-title {
@@ -1293,6 +1689,23 @@ footer p {
   .landing-background .exif-banner {
     font-size: 6px;
     padding: 3px 6px;
+  }
+
+  /* Enter Noise Journal Button - Small Mobile (Bottom Position) */
+  #enter-noise-journal {
+    left: auto;
+    right: 15px;
+    top: auto;
+    bottom: 25px;
+    transform: rotate(-1.5deg);
+    font-size: 18px;
+    padding: 8px 14px;
+    z-index: 10;
+  }
+
+  #enter-noise-journal:hover,
+  #enter-noise-journal:focus {
+    transform: rotate(-0.5deg) scale(1.05);
   }
 }
 
