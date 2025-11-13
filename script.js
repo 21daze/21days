@@ -610,4 +610,66 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // About-me window functionality - only on landing page
+  const landingSection = document.querySelector('#landing');
+  const aboutMeWindow = landingSection ? landingSection.querySelector('.about-me-window') : null;
+  
+  if (aboutMeWindow) {
+    // Initialize about-me window to start minimized
+    aboutMeWindow.classList.add('minimized');
+    
+    // Make window draggable and minimizable (reuse existing window logic)
+    const titleBar = aboutMeWindow.querySelector('.window-title-bar');
+    const minimizeBtn = aboutMeWindow.querySelector('.window-minimize');
+    
+    if (titleBar) {
+      let isDragging = false;
+      let mouseMoved = false;
+      let startX, startY, startLeft, startTop;
+      
+      titleBar.addEventListener('mousedown', function(e) {
+        if (e.target.closest('.window-controls')) return;
+        isDragging = true;
+        mouseMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = aboutMeWindow.getBoundingClientRect();
+        startLeft = rect.left;
+        startTop = rect.top;
+        aboutMeWindow.style.transition = 'none';
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        mouseMoved = true;
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        aboutMeWindow.style.left = (startLeft + deltaX) + 'px';
+        aboutMeWindow.style.top = (startTop + deltaY) + 'px';
+      });
+      
+      document.addEventListener('mouseup', function() {
+        if (isDragging) {
+          isDragging = false;
+          aboutMeWindow.style.transition = '';
+          if (!mouseMoved) {
+            // Click without drag - toggle minimize
+            aboutMeWindow.classList.toggle('minimized');
+          }
+        }
+        mouseMoved = false;
+      });
+      
+      // Minimize button click
+      if (minimizeBtn) {
+        minimizeBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          aboutMeWindow.classList.toggle('minimized');
+        });
+      }
+    }
+  }
 });

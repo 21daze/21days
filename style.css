@@ -124,6 +124,34 @@ figure.photo {
   z-index: 2;
 }
 
+/* About-me Window - Mac OS X 2009 style, only on landing page */
+#landing .about-me-window {
+  position: absolute;
+  z-index: 2;
+  max-width: 240px; /* 50% smaller (was 480px) */
+  width: 240px;
+  top: 100px;
+  right: 8%;
+  left: auto;
+  padding: 0;
+  transition: left 0.3s ease, top 0.3s ease, z-index 0s;
+  /* Mac OS X 2009 window styling */
+  background: #E8E8E8;
+  border: 1px solid #A0A0A0;
+  border-radius: 5px;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+  user-select: none;
+  transition: height 0.3s ease, max-height 0.3s ease;
+  box-sizing: border-box;
+}
+
 /* ============================================
    CONTENT ELEMENTS
    ============================================
@@ -178,7 +206,8 @@ figure.photo {
   max-width: 380px;
   width: 380px;
   top: 300px;
-  right: 15%;
+  left: 8%;
+  right: auto;
   padding: 0;
   background: #E8E8E8;
   border: 1px solid #A0A0A0;
@@ -1145,11 +1174,15 @@ footer p {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh; /* Exactly viewport height - seamless */
+    min-height: 100vh;
+    max-height: 100vh;
     overflow: hidden;
-    z-index: 1;
+    z-index: 1; /* Background layer */
     /* Ensure container doesn't break layout */
     transform: none;
+    margin: 0;
+    padding: 0;
   }
 
   .landing-background img {
@@ -1187,15 +1220,17 @@ footer p {
      All content elements resize proportionally on mobile
      Elements stay within .landing container bounds
      ============================================ */
-  /* Stack elements vertically on mobile with smooth scrolling */
+  /* Stack elements vertically on mobile with smooth scrolling - seamless */
   .landing {
     position: relative;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 20px;
-    padding-bottom: 40px;
-    min-height: 100vh;
+    padding: 0 !important; /* Remove padding to eliminate gaps - seamless */
+    margin: 0 !important; /* Remove margins to eliminate gaps - seamless */
+    height: 100vh !important; /* Exactly viewport height - seamless */
+    min-height: 100vh !important;
+    max-height: 100vh !important;
     /* Smooth scrolling for mobile */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -1209,21 +1244,73 @@ footer p {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden; /* Prevent horizontal overflow */
     position: relative; /* Ensure proper containment */
+    margin: 0 !important; /* Remove gaps between sections - seamless */
+    padding: 0 !important; /* Remove gaps between sections - seamless */
+    height: 100vh; /* Each section exactly viewport height - seamless */
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow: hidden; /* Prevent any spillage */
   }
 
-  /* Content elements: proportional resizing on mobile */
-  .landing-content {
-    position: relative;
-    transform: none;
-    top: auto;
-    right: auto;
-    left: auto;
-    margin: 20px auto;
-    max-width: 92%;
-    width: 92%;
+  /* Remove gaps between background photos on mobile - seamless pages */
+  section.landing,
+  section#landing,
+  section#relearning-page,
+  section#relearning-hear-page,
+  section#opinion-page {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden;
+  }
+
+  /* Notebook Page - Mobile Responsive */
+  #landing .notebook-page {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%) translateX(100%); /* Hidden by default on mobile */
+    width: 90%;
+    max-width: 90%;
     max-height: 85vh;
+    z-index: 15; /* Above all elements on mobile */
+  }
+
+  #landing .notebook-page.open {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  #landing .notebook-content {
+    padding: 0 20px 20px 28px;
+    font-size: 11px;
+    line-height: 32px; /* Maintain line alignment */
+    max-height: calc(85vh - 20px);
+  }
+
+  /* About-me trigger button - Mobile */
+  #landing .about-me-trigger {
+    right: 5px;
+    font-size: 12px;
+    padding: 6px 10px;
+    display: inline-block !important;
+  }
+
+  /* Content elements: smaller sizing for mobile - over background */
+  .landing-content,
+  .about-me-window {
+    position: absolute !important; /* Absolute to overlay background */
+    top: 15px;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 !important;
+    max-width: 75%; /* Smaller for mobile */
+    width: 75%;
+    max-height: 70vh; /* Reduced height for mobile */
     height: auto;
-    z-index: 5;
+    z-index: 10 !important; /* Above background - ensure visibility */
     padding: 0;
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
@@ -1232,19 +1319,21 @@ footer p {
     box-sizing: border-box; /* Ensure proper sizing */
   }
 
-  /* Relearning windows: proportional resizing */
+  /* Relearning windows: smaller sizing for mobile - over background */
   .relearning-window,
   .relearning-hear-window {
-    position: relative;
-    top: auto;
+    position: absolute !important; /* Absolute to overlay background */
+    top: 15px; /* Top of viewport within their section */
+    bottom: auto;
     right: auto;
-    left: auto;
-    margin: 20px auto;
-    max-width: 95%;
-    width: 95%;
-    max-height: none;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 !important;
+    max-width: 75%; /* Smaller for mobile */
+    width: 75%;
+    max-height: 70vh; /* Reduced height for mobile */
     height: auto;
-    z-index: 5;
+    z-index: 10 !important; /* Above background - ensure visibility */
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
@@ -1252,18 +1341,20 @@ footer p {
     box-sizing: border-box; /* Ensure proper sizing */
   }
 
-  /* Social window: proportional resizing */
+  /* Social window: smaller sizing for mobile - over background */
   .social-window {
-    position: relative;
-    max-width: 95%;
-    width: 95%;
-    top: auto;
+    position: absolute !important; /* Absolute to overlay background */
+    max-width: 75%; /* Smaller for mobile */
+    width: 75%;
+    top: 15px; /* Top of viewport within their section */
+    bottom: auto;
     right: auto;
-    left: auto;
-    margin: 30px auto;
-    max-height: none;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 !important;
+    max-height: 70vh; /* Reduced height for mobile */
     height: auto;
-    z-index: 5;
+    z-index: 10 !important; /* Above background - ensure visibility */
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
@@ -1272,37 +1363,67 @@ footer p {
   }
 
   .social-content {
-    max-height: 400px;
+    max-height: calc(70vh - 60px); /* Adjusted for smaller mobile windows */
     overflow-y: auto;
-}
+  }
 
   .lastfm-content {
-    max-height: 380px;
+    max-height: calc(70vh - 80px); /* Adjusted for smaller mobile windows */
     overflow-y: auto;
     padding: 12px;
   }
 
-  /* Text elements: proportional resizing and containment */
+  /* EXIF data: appear on top of background on mobile */
+  .exif-data {
+    position: absolute !important;
+    bottom: 15px !important;
+    left: 15px !important;
+    right: auto !important;
+    z-index: 15 !important; /* Above all content - ensure visibility */
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Scroll indicator: appear on top of background on mobile */
+  .scroll-indicator {
+    position: absolute !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 15 !important; /* Above all content - ensure visibility */
+    margin: 0;
+  }
+
+  /* Enter noise journal button: appear on top of background on mobile */
+  #enter-noise-journal {
+    position: absolute !important;
+    z-index: 15 !important; /* Above all content - ensure visibility */
+    max-width: calc(100% - 40px); /* Sized for mobile */
+    font-size: 18px; /* Slightly smaller for mobile */
+    padding: 10px 16px;
+  }
+
+  /* Text elements: smaller sizing for mobile */
   .landing-text-wrapper {
-    padding: 16px 14px;
+    padding: 12px 10px; /* Reduced padding */
     min-height: auto;
     overflow-wrap: break-word;
     word-wrap: break-word;
-    max-height: calc(85vh - 50px);
+    max-height: calc(70vh - 50px); /* Adjusted for smaller windows */
     overflow-y: auto;
     overflow-x: hidden; /* Prevent horizontal overflow */
     box-sizing: border-box; /* Ensure proper sizing */
   }
 
-  /* Ensure text never gets cut off */
+  /* Ensure text never gets cut off - smaller font for mobile */
   .landing-text {
-    padding: 0 6px;
+    padding: 0 4px; /* Reduced padding */
     margin: 0;
     overflow-wrap: break-word;
     word-wrap: break-word;
     hyphens: auto;
-    line-height: 1.6;
-    font-size: 11px;
+    line-height: 1.5; /* Tighter line height */
+    font-size: 10px; /* Smaller font for mobile */
     box-sizing: border-box; /* Ensure proper sizing */
     max-width: 100%; /* Prevent overflow */
   }
@@ -1318,18 +1439,15 @@ footer p {
   }
 
   .landing-title {
-    font-size: 11px;
-    padding: 0 50px;
-    line-height: 1.4;
+    font-size: 9px; /* Smaller title for mobile */
+    padding: 0 40px; /* Reduced padding */
+    line-height: 1.3;
   }
 
-  .landing-text {
-    font-size: 12px;
-    line-height: 1.6;
-  }
-
+  /* Remove duplicate .landing-text rule - already defined above */
+  
   .landing-text .intro-lead {
-    font-size: 12px;
+    font-size: 10px; /* Smaller lead text for mobile */
   }
 
   .sound-text {
@@ -1544,9 +1662,13 @@ footer p {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh !important; /* Exactly viewport height - seamless */
+    min-height: 100vh;
+    max-height: 100vh;
     overflow: hidden;
-    z-index: 1;
+    z-index: 1; /* Background layer */
+    margin: 0;
+    padding: 0;
   }
 
   .landing-background img {
@@ -1577,65 +1699,80 @@ footer p {
     overflow: hidden;
   }
 
+  /* Small mobile: seamless sections */
   .landing {
-    padding-top: 15px;
-    padding-bottom: 30px;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden;
   }
 
+  /* Small mobile: content elements smaller sizing - positioned over background */
   .landing-content,
+  .about-me-window,
   .social-window,
   .relearning-window,
   .relearning-hear-window {
-    max-width: 94%;
-    width: 94%;
-    margin: 18px auto;
-    max-height: 85vh;
+    position: absolute !important;
+    max-width: 70% !important; /* Smaller for small mobile */
+    width: 70% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 12px !important;
+    margin: 0 !important;
+    max-height: 65vh !important; /* Reduced for small mobile */
+    z-index: 10 !important; /* Above background */
   }
 
-  /* Equal spacing between about-me and Last.fm on small screens */
-  .landing-content {
-    margin-bottom: 30px;
-    margin-top: 20px;
+  /* Small mobile: EXIF data, scroll indicators, buttons on top */
+  .exif-data {
+    z-index: 15 !important;
+    bottom: 10px !important;
+    left: 10px !important;
   }
 
-  .social-window {
-    margin-top: 30px;
-    margin-bottom: 30px;
+  .scroll-indicator {
+    z-index: 15 !important;
+    bottom: 15px !important;
   }
 
-  .landing-content + .social-window {
-    margin-top: 30px;
+  #enter-noise-journal {
+    z-index: 15 !important;
+    font-size: 16px !important;
+    padding: 8px 14px !important;
   }
 
-  /* Text elements: small mobile - proportional resizing */
+  /* Text elements: small mobile - even smaller sizing */
   .landing-text-wrapper {
-    padding: 14px 12px;
-    max-height: calc(85vh - 45px);
+    padding: 10px 8px; /* Reduced padding */
+    max-height: calc(65vh - 45px); /* Adjusted for smaller windows */
     overflow-y: auto;
     overflow-x: hidden; /* Prevent horizontal overflow */
     box-sizing: border-box; /* Ensure proper sizing */
   }
 
   .landing-text {
-    font-size: 10px;
-    line-height: 1.5;
-    padding: 0 4px;
+    font-size: 9px; /* Smaller font for small mobile */
+    line-height: 1.4; /* Tighter line height */
+    padding: 0 3px; /* Reduced padding */
     box-sizing: border-box; /* Ensure proper sizing */
     max-width: 100%; /* Prevent overflow */
   }
 
   .landing-title {
-    font-size: 10px;
-    padding: 0 45px;
+    font-size: 8px; /* Smaller title for small mobile */
+    padding: 0 35px; /* Reduced padding */
   }
 
   .landing-text {
-    font-size: 11px;
-    line-height: 1.5;
+    font-size: 9px; /* Smaller text for small mobile */
+    line-height: 1.4;
   }
 
   .landing-text .intro-lead {
-    font-size: 11px;
+    font-size: 9px; /* Smaller lead text for small mobile */
   }
 
   .sound-quote {
