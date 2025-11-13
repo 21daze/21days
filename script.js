@@ -87,14 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.classList.add('minimized');
   }
   // Social window stays open
-  // Relearning window starts minimized
-  if (relearningWindow) {
-    relearningWindow.classList.add('minimized');
-  }
-  // Relearning Hear window starts minimized
-  if (relearningHearWindow) {
-    relearningHearWindow.classList.add('minimized');
-  }
+  // Relearning window stays open (not minimized)
+  // Relearning Hear window stays open (not minimized)
   
   if (window && titleBar) {
     let isDragging = false;
