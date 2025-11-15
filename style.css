@@ -1329,27 +1329,56 @@ footer p {
   }
 
   /* ============================================
-     MOBILE: Container and Content Resizing
+     MOBILE: Background Container as Flex Container
      ============================================
-     All content elements resize proportionally on mobile
-     Elements stay within .landing container bounds
+     Background container uses flexbox layout on mobile
+     All elements are positioned inside/relative to background container
+     Background image remains unchanged, elements flow on top
      ============================================ */
-  /* Stack elements vertically on mobile with smooth scrolling - seamless */
+  /* ============================================
+     MOBILE: Background Container Layout
+     ============================================
+     Section uses flexbox - elements are positioned inside/relative to background
+     Background container remains absolute for layering
+     All content elements flow on top of background using flexbox
+     ============================================ */
+  /* Landing section: flex container for all elements */
   .landing {
     position: relative;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0 !important; /* Remove padding to eliminate gaps - seamless */
-    margin: 0 !important; /* Remove margins to eliminate gaps - seamless */
-    height: 100vh !important; /* Exactly viewport height - seamless */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding: 15px 10px !important; /* Padding for content spacing */
+    margin: 0 !important;
+    height: 100vh !important;
     min-height: 100vh !important;
     max-height: 100vh !important;
+    gap: 15px !important; /* Space between flex items */
     /* Smooth scrolling for mobile */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    z-index: 2;
-    overflow: hidden; /* Ensure all content stays within container */
+    overflow-y: auto !important; /* Allow vertical scrolling if needed */
+    overflow-x: hidden !important;
+    z-index: 2; /* Above background */
+  }
+
+  /* Background container: unchanged, absolute positioned behind content */
+  .landing-background {
+    position: absolute !important; /* Keep absolute for background layer */
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    z-index: 1; /* Background layer - behind content */
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    /* Background image unchanged - fills container */
   }
 
   /* ============================================
@@ -1435,84 +1464,79 @@ footer p {
     display: inline-block !important;
   }
 
-  /* Content elements: smaller sizing for mobile - over background */
-  /* Constrained to viewport width - cannot overflow */
+  /* Content elements: inside background container, positioned with flexbox */
   .landing-content,
   .about-me-window {
-    position: absolute !important; /* Absolute to overlay background */
-    top: 15px !important; /* Top position - visible */
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0 !important;
-    max-width: 75% !important; /* Smaller for mobile - constrained to viewport */
-    width: 75% !important;
-    max-height: 60vh !important; /* Reduced height to leave room for social window */
+    position: relative !important; /* Relative to .landing flex container */
+    order: 1; /* Control stacking order */
+    width: 100% !important;
+    max-width: 85% !important; /* Responsive width */
+    margin: 0 !important; /* No margin, use gap instead */
+    max-height: none !important; /* Allow natural height */
     height: auto;
-    z-index: 10 !important; /* Above background - ensure visibility */
+    z-index: 10 !important; /* Above background */
     padding: 0;
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
-    overflow: hidden; /* Contain content */
-    box-sizing: border-box; /* Ensure proper sizing */
-    /* Prevent overflow-x - mobile-first constraint */
+    overflow: hidden;
+    box-sizing: border-box;
+    /* Flex properties - inside background container */
+    flex-shrink: 0;
+    flex-grow: 0;
+    align-self: center; /* Center within flex container */
+    /* Prevent overflow */
     overflow-x: hidden !important;
-    /* Ensure window stays within its parent section */
-    contain: layout style paint;
+    min-width: 0;
   }
 
-  /* Relearning windows: smaller sizing for mobile - over background */
-  /* Constrained to viewport width - cannot overflow */
+  /* Relearning windows: inside background container, positioned with flexbox */
   .relearning-window,
   .relearning-hear-window {
-    position: absolute !important; /* Absolute to overlay background */
-    top: 15px; /* Top of viewport within their section */
-    bottom: auto;
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0 !important;
-    max-width: 75% !important; /* Smaller for mobile - constrained to viewport */
-    width: 75% !important;
-    max-height: 70vh !important; /* Reduced height for mobile */
+    position: relative !important; /* Relative to .landing flex container */
+    order: 1; /* Control stacking order */
+    width: 100% !important;
+    max-width: 85% !important; /* Responsive width */
+    margin: 0 !important; /* No margin, use gap instead */
+    max-height: none !important; /* Allow natural height */
     height: auto;
-    z-index: 10 !important; /* Above background - ensure visibility */
+    z-index: 10 !important; /* Above background */
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
-    overflow: hidden; /* Contain content */
-    box-sizing: border-box; /* Ensure proper sizing */
-    /* Prevent overflow-x - mobile-first constraint */
+    overflow: hidden;
+    box-sizing: border-box;
+    /* Flex properties - inside background container */
+    flex-shrink: 0;
+    flex-grow: 0;
+    align-self: center; /* Center within flex container */
+    /* Prevent overflow */
     overflow-x: hidden !important;
-    /* Ensure window stays within its parent section */
-    contain: layout style paint;
+    min-width: 0;
   }
 
-  /* Social window: as small as possible on mobile - moved down */
-  /* Constrained to viewport width - cannot overflow */
+  /* Social window: inside background container, positioned with flexbox */
   .social-window {
-    position: absolute !important; /* Absolute to overlay background */
-    max-width: 60% !important; /* Much smaller for mobile - constrained to viewport */
-    width: 60% !important;
-    top: auto !important;
-    bottom: 20px !important; /* Moved to bottom */
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0 !important;
-    max-height: 200px !important; /* Very small height */
+    position: relative !important; /* Relative to .landing flex container */
+    order: 2; /* Appears after content windows */
+    width: 100% !important;
+    max-width: 70% !important; /* Responsive width */
+    margin: 0 !important; /* No margin, use gap instead */
+    max-height: 250px !important; /* Constrained height for mobile */
     height: auto;
-    z-index: 10 !important; /* Above background - ensure visibility */
+    z-index: 10 !important; /* Above background */
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
-    overflow: hidden; /* Contain content */
-    box-sizing: border-box; /* Ensure proper sizing */
-    /* Prevent overflow-x - mobile-first constraint */
+    overflow: hidden;
+    box-sizing: border-box;
+    /* Flex properties - inside background container */
+    flex-shrink: 1;
+    flex-grow: 0;
+    align-self: center; /* Center within flex container */
+    /* Prevent overflow */
     overflow-x: hidden !important;
-    /* Ensure window stays within its parent section */
-    contain: layout style paint;
+    min-width: 0;
   }
 
   .social-content {
@@ -1558,34 +1582,29 @@ footer p {
     font-size: 7px !important;
   }
 
-  /* EXIF data: appear on top of background on mobile */
-  .exif-data {
-    position: absolute !important;
+  /* EXIF data: anchored to background container */
+  .landing-background .exif-data {
+    position: absolute !important; /* Keep absolute for background overlay */
     bottom: 15px !important;
     left: 15px !important;
     right: auto !important;
-    z-index: 15 !important; /* Above all content - ensure visibility */
+    z-index: 15 !important; /* Above all content */
     margin: 0;
     padding: 0;
   }
 
-  /* Scroll indicator: appear on top of background on mobile */
-  .scroll-indicator {
-    position: absolute !important;
-    bottom: 20px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 15 !important; /* Above all content - ensure visibility */
-    margin: 0;
-  }
-
-  /* Enter noise journal button: appear on top of background on mobile */
+  /* Enter noise journal button: inside background container, positioned with flexbox */
   #enter-noise-journal {
-    position: absolute !important;
-    z-index: 15 !important; /* Above all content - ensure visibility */
-    max-width: calc(100% - 40px); /* Sized for mobile */
-    font-size: 18px; /* Slightly smaller for mobile */
+    position: relative !important; /* Relative to .landing flex container */
+    order: 1; /* Control stacking order */
+    z-index: 15 !important; /* Above background */
+    max-width: calc(100% - 40px) !important;
+    width: auto !important;
+    margin: 0 !important; /* No margin, use gap instead */
+    font-size: 18px !important;
     padding: 10px 16px;
+    align-self: flex-start; /* Align to left side */
+    flex-shrink: 0;
   }
 
   /* Text elements: smaller sizing for mobile */
@@ -1765,16 +1784,21 @@ footer p {
     padding: 30px 20px;
   }
 
-  /* Enter Noise Journal Button - Mobile (Bottom Position) */
+  /* Enter Noise Journal Button - Mobile (Anchored to container) */
   #enter-noise-journal {
-    left: auto;
-    right: 20px;
-    top: auto;
-    bottom: 30px;
+    position: relative !important; /* Relative to parent container */
+    order: 1; /* Control stacking order */
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
     transform: rotate(-1.5deg);
     font-size: 20px;
     padding: 10px 16px;
     z-index: 10;
+    margin: 10px auto !important; /* Center horizontally */
+    align-self: flex-start; /* Align to left side */
+    flex-shrink: 0;
   }
 
   #enter-noise-journal:hover,
@@ -1782,26 +1806,14 @@ footer p {
     transform: rotate(-0.5deg) scale(1.05);
   }
 
-  /* Ensure windows don't overlap - stack vertically with equal spacing */
-  .landing-content {
-    margin-bottom: 40px;
-    margin-top: 30px;
-  }
-
-  .social-window {
-    margin-top: 40px;
-    margin-bottom: 40px;
-  }
-
-  .relearning-window,
-  .relearning-hear-window {
-    margin-bottom: 40px;
-    margin-top: 40px;
-  }
-
-  /* Ensure equal spacing between about-me and Last.fm widget */
-  .landing-content + .social-window {
-    margin-top: 40px;
+  /* Scroll indicators: inside background container, positioned with flexbox */
+  .scroll-indicator {
+    position: relative !important; /* Relative to .landing flex container */
+    order: 3; /* Appears last in flex container */
+    margin: 0 !important; /* No margin, use gap instead */
+    z-index: 10 !important; /* Above background */
+    flex-shrink: 0;
+    align-self: center; /* Center within flex container */
   }
 
   /* Prevent horizontal overflow for containers - mobile-first */
@@ -1893,63 +1905,71 @@ footer p {
     overflow: hidden;
   }
 
-  /* Small mobile: seamless sections */
+  /* Small mobile: landing section - flex container for elements */
   .landing {
-    padding: 0 !important;
+    position: relative;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding: 12px 8px !important; /* Slightly less padding on small screens */
     margin: 0 !important;
     height: 100vh !important;
     min-height: 100vh !important;
     max-height: 100vh !important;
-    overflow: hidden;
-    /* Contain all content within section */
-    contain: layout style paint;
+    gap: 12px !important; /* Slightly smaller gap on small screens */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 2;
     box-sizing: border-box;
-    /* Force landing to start at top with no gaps */
+  }
+
+  /* Small mobile: background container unchanged */
+  .landing-background {
+    position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    vertical-align: top;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    z-index: 1;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
   }
 
-  /* Small mobile: content elements smaller sizing - positioned over background */
+  /* Small mobile: content elements - anchored with flexbox */
   .landing-content,
   .about-me-window {
-    position: absolute !important;
-    max-width: 70% !important; /* Smaller for small mobile */
-    width: 70% !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: 12px !important;
-    margin: 0 !important;
-    max-height: 55vh !important; /* Reduced to leave room for social window */
-    z-index: 10 !important; /* Above background */
+    position: relative !important;
+    max-width: 90% !important; /* Wider on small screens */
+    width: 100% !important;
+    margin: 0 auto !important;
+    max-height: none !important;
+    z-index: 10 !important;
   }
 
-  /* Small mobile: social window - as small as possible, moved down */
+  /* Small mobile: social window - anchored with flexbox */
   .social-window {
-    position: absolute !important;
-    max-width: 55% !important; /* Very small for small mobile */
-    width: 55% !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: auto !important;
-    bottom: 15px !important; /* Moved to bottom */
-    margin: 0 !important;
-    max-height: 180px !important; /* Very small height */
-    z-index: 10 !important; /* Above background */
+    position: relative !important;
+    max-width: 85% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    max-height: 200px !important;
+    z-index: 10 !important;
   }
 
   .relearning-window,
   .relearning-hear-window {
-    position: absolute !important;
-    max-width: 70% !important; /* Smaller for small mobile */
-    width: 70% !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: 12px !important;
-    margin: 0 !important;
-    max-height: 65vh !important; /* Reduced for small mobile */
-    z-index: 10 !important; /* Above background */
+    position: relative !important;
+    max-width: 90% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    max-height: none !important;
+    z-index: 10 !important;
   }
 
   /* Small mobile: Last.fm content even smaller */
@@ -1984,22 +2004,28 @@ footer p {
     font-size: 6px !important;
   }
 
-  /* Small mobile: EXIF data, scroll indicators, buttons on top */
-  .exif-data {
+  /* Small mobile: EXIF data - keep absolute for background overlay */
+  .landing-background .exif-data {
     z-index: 15 !important;
     bottom: 10px !important;
     left: 10px !important;
   }
 
+  /* Small mobile: scroll indicators - anchored with flexbox */
   .scroll-indicator {
+    position: relative !important;
     z-index: 15 !important;
-    bottom: 15px !important;
+    margin: 10px auto !important;
   }
 
+  /* Small mobile: enter noise journal button - anchored with flexbox */
   #enter-noise-journal {
+    position: relative !important;
     z-index: 15 !important;
     font-size: 16px !important;
     padding: 8px 14px !important;
+    margin: 10px auto !important;
+    align-self: flex-start;
   }
 
   /* Text elements: small mobile - even smaller sizing */
@@ -2086,16 +2112,21 @@ footer p {
     padding: 3px 6px;
   }
 
-  /* Enter Noise Journal Button - Small Mobile (Bottom Position) */
+  /* Enter Noise Journal Button - Small Mobile (Anchored to container) */
   #enter-noise-journal {
-    left: auto;
-    right: 15px;
-    top: auto;
-    bottom: 25px;
+    position: relative !important; /* Relative to parent container */
+    order: 1; /* Control stacking order */
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
     transform: rotate(-1.5deg);
     font-size: 18px;
     padding: 8px 14px;
     z-index: 10;
+    margin: 10px auto !important; /* Center horizontally */
+    align-self: flex-start; /* Align to left side */
+    flex-shrink: 0;
   }
 
   #enter-noise-journal:hover,
