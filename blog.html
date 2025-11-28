@@ -25,9 +25,43 @@
   </header>
 
   <main class="blog-main">
+    <!-- Blog Header with Title, Search, and Archives -->
+    <header class="blog-header">
+      <h1 class="blog-title">FLOOD THE GATES</h1>
+      <div class="blog-header-controls">
+        <!-- Search Box -->
+        <div class="blog-search-container">
+          <input type="text" id="blog-search" class="blog-search-input" placeholder="Search posts..." aria-label="Search blog posts">
+        </div>
+        <!-- Archives Dropdown -->
+        <div class="blog-archives-dropdown">
+          <button class="blog-archives-toggle" id="archives-toggle" aria-label="View archives" aria-expanded="false">
+            Archives
+          </button>
+          <div class="blog-archives-menu" id="archives-menu" role="menu">
+            <!-- Archives will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </header>
+
     <div class="blog-container">
       <!-- Blog Post Template -->
-      <article class="blog-post">
+      <!-- Posts are ordered newest first (chronological) -->
+      <article class="blog-post" id="post-2025-01-15" data-post-date="2025-01-15">
+        <header class="post-header">
+          <h2 class="post-title">Another Post Title</h2>
+          <time class="post-date" datetime="2025-01-15">15 Jan, 2025</time>
+        </header>
+        
+        <div class="post-content">
+          <p>This is another blog post. Each post is separated with clear spacing and maintains the same typography-focused aesthetic.</p>
+          
+          <p>You can mix and match content types as needed—text, photos, YouTube videos, Spotify tracks, and playlists.</p>
+        </div>
+      </article>
+
+      <article class="blog-post" id="post-2025-01-01" data-post-date="2025-01-01">
         <header class="post-header">
           <h2 class="post-title">Post Title</h2>
           <time class="post-date" datetime="2025-01-01">01 Jan, 2025</time>
@@ -107,20 +141,6 @@
           </div>
         </div>
       </article>
-
-      <!-- Second Blog Post Example -->
-      <article class="blog-post">
-        <header class="post-header">
-          <h2 class="post-title">Another Post Title</h2>
-          <time class="post-date" datetime="2025-01-15">15 Jan, 2025</time>
-        </header>
-        
-        <div class="post-content">
-          <p>This is another blog post. Each post is separated with clear spacing and maintains the same typography-focused aesthetic.</p>
-          
-          <p>You can mix and match content types as needed—text, photos, YouTube videos, Spotify tracks, and playlists.</p>
-        </div>
-      </article>
     </div>
   </main>
 
@@ -129,6 +149,236 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Blog-specific functionality: Search, Archives, and Post Sorting
+    (function() {
+      'use strict';
+
+      // Initialize when DOM is ready
+      document.addEventListener('DOMContentLoaded', function() {
+        
+        // ============================================
+        // ARCHIVES DROPDOWN FUNCTIONALITY
+        // ============================================
+        const archivesToggle = document.getElementById('archives-toggle');
+        const archivesMenu = document.getElementById('archives-menu');
+        
+        // Collect all posts and create archives list
+        function populateArchives() {
+          const posts = document.querySelectorAll('.blog-post');
+          const postsArray = Array.from(posts);
+          
+          // Sort posts by date (newest first) for archives display
+          postsArray.sort(function(a, b) {
+            const dateA = a.getAttribute('data-post-date') || a.querySelector('time[datetime]')?.getAttribute('datetime') || '';
+            const dateB = b.getAttribute('data-post-date') || b.querySelector('time[datetime]')?.getAttribute('datetime') || '';
+            return dateB.localeCompare(dateA); // Descending order (newest first)
+          });
+          
+          // Clear existing archives menu
+          archivesMenu.innerHTML = '';
+          
+          // Create archive items
+          postsArray.forEach(function(post) {
+            const titleElement = post.querySelector('.post-title');
+            const dateElement = post.querySelector('.post-date');
+            
+            if (!titleElement || !dateElement) return;
+            
+            const title = titleElement.textContent.trim();
+            const date = dateElement.textContent.trim();
+            const datetime = dateElement.getAttribute('datetime');
+            
+            // Generate ID for post if it doesn't have one
+            if (!post.id) {
+              const dateStr = datetime || post.getAttribute('data-post-date') || '';
+              post.id = 'post-' + dateStr.replace(/[^\w-]/g, '-');
+            }
+            
+            const archiveItem = document.createElement('a');
+            archiveItem.href = '#' + post.id;
+            archiveItem.className = 'blog-archives-item';
+            archiveItem.setAttribute('role', 'menuitem');
+            archiveItem.setAttribute('tabindex', '0');
+            
+            // Create title span
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'blog-archives-item-title';
+            titleSpan.textContent = title;
+            
+            // Create date span
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'blog-archives-item-date';
+            dateSpan.textContent = date;
+            
+            archiveItem.appendChild(titleSpan);
+            archiveItem.appendChild(dateSpan);
+            
+            // Add click handler to scroll to post
+            archiveItem.addEventListener('click', function(e) {
+              e.preventDefault();
+              post.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              // Close dropdown
+              archivesMenu.classList.remove('active');
+              archivesToggle.setAttribute('aria-expanded', 'false');
+              // Highlight post briefly
+              post.style.transition = 'background-color 0.3s ease';
+              post.style.backgroundColor = 'rgba(0, 0, 0, 0.03)';
+              setTimeout(function() {
+                post.style.backgroundColor = '';
+                setTimeout(function() {
+                  post.style.transition = '';
+                }, 300);
+              }, 1000);
+            });
+            
+            archivesMenu.appendChild(archiveItem);
+          });
+          
+          // Show message if no posts
+          if (postsArray.length === 0) {
+            const noPostsMsg = document.createElement('div');
+            noPostsMsg.className = 'blog-archives-item';
+            noPostsMsg.textContent = 'No posts found';
+            noPostsMsg.style.color = '#999';
+            noPostsMsg.style.fontStyle = 'italic';
+            archivesMenu.appendChild(noPostsMsg);
+          }
+        }
+        
+        // Toggle archives dropdown
+        if (archivesToggle && archivesMenu) {
+          archivesToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const isExpanded = archivesToggle.getAttribute('aria-expanded') === 'true';
+            
+            if (!isExpanded) {
+              // Populate archives if empty
+              if (archivesMenu.children.length === 0) {
+                populateArchives();
+              }
+              archivesMenu.classList.add('active');
+              archivesToggle.setAttribute('aria-expanded', 'true');
+            } else {
+              archivesMenu.classList.remove('active');
+              archivesToggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+          
+          // Close dropdown when clicking outside
+          document.addEventListener('click', function(e) {
+            if (!archivesMenu.contains(e.target) && !archivesToggle.contains(e.target)) {
+              archivesMenu.classList.remove('active');
+              archivesToggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+          
+          // Close dropdown on escape key
+          document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && archivesMenu.classList.contains('active')) {
+              archivesMenu.classList.remove('active');
+              archivesToggle.setAttribute('aria-expanded', 'false');
+              archivesToggle.focus();
+            }
+          });
+        }
+        
+        // ============================================
+        // SEARCH FUNCTIONALITY
+        // ============================================
+        const searchInput = document.getElementById('blog-search');
+        const posts = document.querySelectorAll('.blog-post');
+        
+        if (searchInput) {
+          // Search on input
+          searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            posts.forEach(function(post) {
+              const titleElement = post.querySelector('.post-title');
+              const contentElement = post.querySelector('.post-content');
+              
+              if (!titleElement || !contentElement) {
+                post.classList.add('hidden');
+                return;
+              }
+              
+              const title = titleElement.textContent.toLowerCase();
+              const content = contentElement.textContent.toLowerCase();
+              
+              // Search in title and content
+              if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                post.classList.remove('hidden');
+              } else {
+                post.classList.add('hidden');
+              }
+            });
+            
+            // Update archives dropdown after search if it's open
+            if (archivesMenu && archivesMenu.classList.contains('active')) {
+              populateArchives();
+            }
+          });
+          
+          // Clear search on escape
+          searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+              searchInput.value = '';
+              searchInput.dispatchEvent(new Event('input'));
+              searchInput.blur();
+            }
+          });
+        }
+        
+        // ============================================
+        // ENSURE POSTS ARE SORTED (NEWEST FIRST)
+        // ============================================
+        // Posts are already in correct order in HTML (newest first)
+        // This function ensures they remain sorted if dynamically added
+        function sortPostsByDate() {
+          const blogContainer = document.querySelector('.blog-container');
+          if (!blogContainer) return;
+          
+          const postsArray = Array.from(document.querySelectorAll('.blog-post'));
+          
+          // Sort by date (newest first)
+          postsArray.sort(function(a, b) {
+            const dateA = a.getAttribute('data-post-date') || a.querySelector('time[datetime]')?.getAttribute('datetime') || '';
+            const dateB = b.getAttribute('data-post-date') || b.querySelector('time[datetime]')?.getAttribute('datetime') || '';
+            return dateB.localeCompare(dateA); // Descending order (newest first)
+          });
+          
+          // Re-append posts in sorted order
+          postsArray.forEach(function(post) {
+            blogContainer.appendChild(post);
+          });
+        }
+        
+        // Sort posts on page load
+        sortPostsByDate();
+        
+        // ============================================
+        // TOUCH-FRIENDLY INTERACTIONS FOR MOBILE
+        // ============================================
+        // Ensure dropdown and search work on touch devices
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        if (isTouchDevice) {
+          // Add touch-friendly classes
+          if (archivesToggle) {
+            archivesToggle.style.cursor = 'pointer';
+            archivesToggle.style.touchAction = 'manipulation';
+            archivesToggle.style.webkitTapHighlightColor = 'transparent';
+          }
+          
+          if (searchInput) {
+            searchInput.style.touchAction = 'manipulation';
+          }
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
 
