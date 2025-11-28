@@ -57,8 +57,130 @@ function loadLastFMEmbed(username) {
   // Or use iframe embed: https://www.last.fm/user/${username}/library/artists?date_preset=LAST_30_DAYS
 }
 
+// Check if device is mobile
+function isMobileDevice() {
+  return window.innerWidth <= 768;
+}
+
+// First page interactive windows (mobile only)
+function initFirstPageInteractiveWindows() {
+  if (!isMobileDevice()) {
+    return; // Desktop/tablet - no interactive windows
+  }
+
+  const landingSection = document.querySelector('#landing');
+  if (!landingSection) return;
+
+  // Get windows on first page
+  const aboutMeWindow = landingSection.querySelector('#about-me-window');
+  const lastfmWindow = landingSection.querySelector('#lastfm-window');
+
+  // Function to toggle window visibility
+  function toggleWindow(window) {
+    if (!window) return;
+    
+    const isActive = window.classList.contains('window-active');
+    
+    if (isActive) {
+      // Close this window
+      window.classList.remove('window-active');
+    } else {
+      // Open this window (can overlap with others)
+      window.classList.add('window-active');
+    }
+  }
+
+  // Make windows clickable to toggle - click on title bar
+  if (aboutMeWindow) {
+    const aboutMeTitleBar = aboutMeWindow.querySelector('.window-title-bar');
+    
+    // Toggle on title bar click (title bar is always visible)
+    if (aboutMeTitleBar) {
+      aboutMeTitleBar.addEventListener('click', function(e) {
+        // Don't toggle if clicking close button
+        if (e.target.classList.contains('window-close') || e.target.closest('.window-close')) {
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        toggleWindow(aboutMeWindow);
+      });
+    }
+
+    // Close button functionality
+    const aboutMeCloseBtn = aboutMeWindow.querySelector('.window-close');
+    if (aboutMeCloseBtn) {
+      aboutMeCloseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        aboutMeWindow.classList.remove('window-active');
+      });
+    }
+
+    // Prevent window content clicks from toggling
+    const aboutMeContent = aboutMeWindow.querySelector('.landing-text-wrapper');
+    if (aboutMeContent) {
+      aboutMeContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+  }
+
+  if (lastfmWindow) {
+    const lastfmTitleBar = lastfmWindow.querySelector('.window-title-bar');
+    
+    // Toggle on title bar click (title bar is always visible)
+    if (lastfmTitleBar) {
+      lastfmTitleBar.addEventListener('click', function(e) {
+        // Don't toggle if clicking close button
+        if (e.target.classList.contains('window-close') || e.target.closest('.window-close')) {
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        toggleWindow(lastfmWindow);
+      });
+    }
+
+    // Close button functionality
+    const lastfmCloseBtn = lastfmWindow.querySelector('.window-close');
+    if (lastfmCloseBtn) {
+      lastfmCloseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        lastfmWindow.classList.remove('window-active');
+      });
+    }
+
+    // Prevent window content clicks from toggling
+    const lastfmContent = lastfmWindow.querySelector('.social-content');
+    if (lastfmContent) {
+      lastfmContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+  }
+
+  // Close windows when clicking on background (optional - can be removed if not needed)
+  // Uncomment if you want background clicks to close windows
+  /*
+  if (landingSection) {
+    landingSection.addEventListener('click', function(e) {
+      // Only close if clicking directly on background
+      if (e.target === landingSection || e.target.classList.contains('landing-background') || e.target.closest('.landing-background')) {
+        if (aboutMeWindow) aboutMeWindow.classList.remove('window-active');
+        if (lastfmWindow) lastfmWindow.classList.remove('window-active');
+      }
+    });
+  }
+  */
+}
+
 // Smooth scrolling for anchor links
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize first page interactive windows (mobile only)
+  initFirstPageInteractiveWindows();
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
     e.preventDefault();
@@ -72,7 +194,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Window minimize/expand functionality
+  // Disable all drag/minimize functionality on mobile
+  if (isMobileDevice()) {
+    // Remove minimized class from all windows on mobile - make them always open
+    document.querySelectorAll('.landing-content, .about-me-window, .social-window, .relearning-window, .relearning-hear-window').forEach(win => {
+      win.classList.remove('minimized');
+    });
+    return; // Exit early - no window functionality on mobile
+  }
+
+  // Window minimize/expand functionality - DESKTOP ONLY
+
   const window = document.querySelector('.landing-content');
   const titleBar = document.querySelector('.window-title-bar');
   const socialWindow = document.querySelector('.social-window');
@@ -82,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const relearningHearWindow = document.querySelector('.relearning-hear-window');
   const relearningHearTitleBar = relearningHearWindow ? relearningHearWindow.querySelector('.window-title-bar') : null;
   
-  // Start minimized (only about-me window)
+  // Start minimized (only about-me window) - DESKTOP ONLY
   if (window) {
     window.classList.add('minimized');
   }
@@ -605,12 +737,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // About-me window functionality - only on landing page
+  // About-me window functionality - only on landing page - DESKTOP ONLY
+  if (isMobileDevice()) {
+    // On mobile, ensure about-me window is always open
+    const landingSection = document.querySelector('#landing');
+    const aboutMeWindow = landingSection ? landingSection.querySelector('.about-me-window') : null;
+    if (aboutMeWindow) {
+      aboutMeWindow.classList.remove('minimized');
+    }
+    return; // Exit - no window functionality on mobile
+  }
+
   const landingSection = document.querySelector('#landing');
   const aboutMeWindow = landingSection ? landingSection.querySelector('.about-me-window') : null;
   
   if (aboutMeWindow) {
-    // Initialize about-me window to start minimized
+    // Initialize about-me window to start minimized - DESKTOP ONLY
     aboutMeWindow.classList.add('minimized');
     
     // Make window draggable and minimizable (reuse existing window logic)

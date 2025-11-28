@@ -24,6 +24,7 @@
 }
 
 /* AGGRESSIVE GAP REMOVAL - Force all sections to start at top */
+/* Applied globally to prevent white gaps on mobile, even after GitHub export */
 section:first-of-type {
   margin-top: 0 !important;
   padding-top: 0 !important;
@@ -34,16 +35,36 @@ section:first-of-type {
 section + section {
   margin-top: 0 !important;
   padding-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Prevent any default browser spacing on all sections */
+/* Applied globally to prevent white gaps on mobile, even after GitHub export */
+section {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  /* iOS Safari fix: prevent address bar from creating gaps */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 /* Smooth scrolling for entire document */
 html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  margin: 0;
-  padding: 0;
-  height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
   overflow-x: hidden;
+  /* Prevent any default spacing that creates gaps */
+  box-sizing: border-box;
+  /* iOS Safari fix: prevent address bar from creating gaps */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 body {
@@ -64,6 +85,12 @@ body {
   /* Ensure body doesn't create gaps */
   height: auto;
   min-height: auto;
+  /* Prevent any default spacing that creates gaps on GitHub Pages */
+  position: relative;
+  width: 100%;
+  /* iOS Safari fix: prevent address bar from creating gaps */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 /* Global image optimization */
@@ -488,6 +515,87 @@ figure.photo {
   justify-content: center;
   cursor: move;
   -webkit-app-region: drag;
+}
+
+/* Mobile: Disable drag functionality - make title bar static */
+@media (max-width: 768px) {
+  .window-title-bar {
+    cursor: default !important; /* Not draggable on mobile */
+    -webkit-app-region: no-drag !important;
+    pointer-events: auto; /* Allow clicks but not drag */
+  }
+
+  /* Show only close button on mobile - hide minimize/zoom */
+  .window-controls {
+    display: flex !important; /* Show controls on mobile for close button */
+  }
+
+  .window-controls .window-minimize,
+  .window-controls .window-zoom {
+    display: none !important; /* Hide minimize and zoom buttons */
+  }
+
+  .window-controls .window-close {
+    display: block !important; /* Show close button */
+  }
+
+  /* ============================================
+     FIRST PAGE: Interactive Windows (Mobile Only)
+     ============================================
+     Windows on first page (#landing) are hidden by default
+     Show only title bar as clickable indicator
+     Toggle full window visibility when title bar is clicked
+     Windows can overlap if needed
+     ============================================ */
+  /* Hide window content by default, show only title bar as clickable indicator */
+  #landing .about-me-window:not(.window-active),
+  #landing .social-window:not(.window-active) {
+    height: 22px !important; /* Only title bar height */
+    max-height: 22px !important;
+    overflow: hidden;
+  }
+
+  #landing .about-me-window:not(.window-active) .landing-text-wrapper,
+  #landing .about-me-window:not(.window-active) .social-content,
+  #landing .social-window:not(.window-active) .social-content {
+    display: none !important; /* Hide content when not active */
+  }
+
+  /* Show full window when active */
+  #landing .about-me-window.window-active {
+    height: auto !important;
+    max-height: none !important;
+    display: flex !important;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #landing .social-window.window-active {
+    height: auto !important;
+    max-height: 250px !important; /* Keep max-height constraint */
+    display: flex !important;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #landing .about-me-window.window-active .landing-text-wrapper,
+  #landing .social-window.window-active .social-content {
+    display: block !important; /* Show content when active */
+  }
+
+  /* Make title bars always visible and clickable - mobile only */
+  #landing .about-me-window .window-title-bar,
+  #landing .social-window .window-title-bar {
+    cursor: pointer !important;
+    display: flex !important; /* Always show title bar */
+    flex-shrink: 0;
+  }
+
+  /* Title bar hover effect to indicate clickability */
+  #landing .about-me-window:not(.window-active) .window-title-bar:hover,
+  #landing .social-window:not(.window-active) .window-title-bar:hover {
+    background: linear-gradient(to bottom, #E0E0E0 0%, #C0C0C0 100%) !important;
+  }
 }
 
 .window-title-bar:hover {
@@ -1254,10 +1362,57 @@ footer p {
   text-transform: uppercase;
 }
 
+footer .footer-subtext {
+  font-size: 9px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   body {
     font-size: 16px;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  body > section:first-of-type {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    top: 0 !important;
+  }
+
+  header {
+    margin-bottom: 0 !important;
+    padding-bottom: 20px !important;
+  }
+
+  section:first-of-type {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  section + section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    gap: 0 !important;
+  }
+
+  #relearning-hear-page + #opinion-page,
+  section#relearning-hear-page + section#opinion-page,
+  #relearning-hear-page + .opinion-section,
+  section#relearning-hear-page + .opinion-section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  #opinion-page {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 
   /* Fix all images for mobile */
@@ -1270,62 +1425,67 @@ footer p {
   }
 
   /* ============================================
-     MOBILE BACKGROUND IMAGE ROTATION (Portrait Mode)
+     MOBILE: Background Sections - Full Viewport Coverage
      ============================================
-     Rotates all background images counter-clockwise (-90deg) 
-     on screens smaller than 768px for portrait orientation.
-     Only affects background images, not content.
-     
-     IMPORTANT: Background images fit viewport without zooming or cropping.
-     Uses object-fit: contain with viewport-based dimensions (100vh x 100vw)
-     to ensure full image visibility on all mobile devices.
+     ALL sections are exactly 100vh on mobile
+     Background images use cover scaling and center positioning
+     No margins/padding that create white space
+     Applied globally to all pages
      ============================================ */
+  /* All background containers - exactly 100vh, no gaps */
+  /* iOS Safari fix: Use 100dvh (dynamic viewport height) for better mobile support */
   .landing-background {
-    position: absolute;
+    position: absolute !important;
     top: 0 !important;
     left: 0 !important;
-    width: 100% !important;
-    height: 100vh !important; /* Exactly viewport height - seamless */
-    min-height: 100vh !important;
-    max-height: 100vh !important;
-    overflow: hidden;
-    z-index: 1; /* Background layer */
-    /* Ensure container doesn't break layout */
-    transform: none;
-    margin: 0 !important;
-    padding: 0 !important;
-    /* Fill entire section with no gaps */
     right: 0 !important;
     bottom: 0 !important;
+    width: 100% !important;
+    /* Use both 100vh and 100dvh for maximum compatibility */
+    height: 100vh !important; /* Exactly 100% of viewport height */
+    height: 100dvh !important; /* Dynamic viewport height for iOS Safari */
+    min-height: 100vh !important;
+    min-height: 100dvh !important; /* Dynamic viewport height for iOS Safari */
+    max-height: 100vh !important;
+    max-height: 100dvh !important; /* Dynamic viewport height for iOS Safari */
+    overflow: hidden !important;
+    z-index: 1; /* Background layer */
+    /* Remove all margins and padding */
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Ensure no gaps */
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    /* iOS Safari specific: prevent address bar from creating gaps */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
+  /* All background images - cover and center on mobile */
   .landing-background img {
-    /* 
-     * COUNTER-CLOCKWISE ROTATION: -90 degrees
-     * Fits viewport without zooming in or cropping
-     * Uses viewport dimensions to ensure full image visibility
-     */
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 100vh;
-    height: 100vw;
-    max-width: none;
-    max-height: none;
-    min-width: 0;
-    min-height: 0;
-    object-fit: contain;
-    object-position: center center;
-    transform: translate(-50%, -50%) rotate(-90deg);
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* Cover scaling - fills entire section */
+    object-position: center center !important; /* Center the image */
+    /* Remove any transforms that might create gaps */
+    transform: none !important;
     transform-origin: center center;
-    /* Smooth transition for rotation */
-    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                filter 0.3s ease;
-    display: block;
-    /* Ensure image doesn't overflow or zoom */
+    /* Smooth transition */
+    transition: filter 0.3s ease;
+    display: block !important;
+    /* Ensure image fills container completely */
     image-rendering: auto;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    /* Prevent any gaps */
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* ============================================
@@ -1342,44 +1502,50 @@ footer p {
      Background container remains absolute for layering
      All content elements flow on top of background using flexbox
      ============================================ */
-  /* Landing section: flex container for all elements */
+  /* Landing section: flex container for all elements - exactly 100vh, no gaps */
+  /* iOS Safari fix: Use 100dvh (dynamic viewport height) for better mobile support */
   .landing {
-    position: relative;
+    position: relative !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
     align-items: center !important;
-    padding: 15px 10px !important; /* Padding for content spacing */
+    padding: 15px 10px !important;
     margin: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     height: 100vh !important;
+    height: 100dvh !important;
     min-height: 100vh !important;
+    min-height: 100dvh !important;
     max-height: 100vh !important;
-    gap: 15px !important; /* Space between flex items */
-    /* Smooth scrolling for mobile */
+    max-height: 100dvh !important;
+    gap: 15px !important;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    overflow-y: auto !important; /* Allow vertical scrolling if needed */
+    overflow-y: auto !important;
     overflow-x: hidden !important;
-    z-index: 2; /* Above background */
-  }
-
-  /* Background container: unchanged, absolute positioned behind content */
-  .landing-background {
-    position: absolute !important; /* Keep absolute for background layer */
+    z-index: 2;
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
-    max-height: 100vh !important;
-    z-index: 1; /* Background layer - behind content */
-    overflow: hidden;
-    margin: 0 !important;
-    padding: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    /* Background image unchanged - fills container */
+    box-sizing: border-box !important;
+    scroll-margin-top: 0 !important;
+    scroll-margin-bottom: 0 !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
+
+  /* Ensure #landing section content stays above other sections */
+  #landing {
+    z-index: 10 !important;
+    position: relative !important;
+  }
+
+  /* Background container already defined above - uses cover scaling */
 
   /* ============================================
      MOBILE-FIRST: SECTION CONTAINMENT
@@ -1388,54 +1554,87 @@ footer p {
      Windows are constrained to viewport width.
      Prevent overflow-x globally.
      ============================================ */
+  /* ALL sections: exactly 100vh, no white gaps - GLOBAL MOBILE FIX */
+  /* iOS Safari fix: Use 100dvh (dynamic viewport height) for better mobile support */
   section {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    overflow-x: hidden !important; /* Prevent horizontal overflow */
-    position: relative; /* Ensure proper containment */
-    margin: 0 !important; /* Remove gaps between sections - seamless */
-    padding: 0 !important; /* Remove gaps between sections - seamless */
-    height: 100vh !important; /* Each section exactly viewport height - seamless */
+    overflow-x: hidden !important;
+    position: relative !important;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
     min-height: 100vh !important;
+    min-height: 100dvh !important;
     max-height: 100vh !important;
-    overflow: hidden; /* Prevent any spillage */
-    /* Contain all content within section */
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    overflow-y: hidden !important;
     contain: layout style paint;
-    box-sizing: border-box;
-    /* Force sections to start at top with no spacing */
+    box-sizing: border-box !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    vertical-align: top;
-    /* Remove any border that could create visual gaps */
+    vertical-align: top !important;
     border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    display: block !important;
+    scroll-margin-top: 0 !important;
+    scroll-margin-bottom: 0 !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
-  /* Remove gaps between background photos on mobile - seamless pages */
+  /* ALL sections: exactly 100vh with no margins/padding on mobile - GLOBAL */
+  /* iOS Safari fix: Use 100dvh (dynamic viewport height) for better mobile support */
+  section,
   section.landing,
   section#landing,
   section#relearning-page,
   section#relearning-hear-page,
-  section#opinion-page {
+  section#opinion-page,
+  .relearning-section,
+  .opinion-section {
     margin: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     padding: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     height: 100vh !important;
+    height: 100dvh !important;
     min-height: 100vh !important;
+    min-height: 100dvh !important;
     max-height: 100vh !important;
-    overflow: hidden;
-    /* Ensure no gaps above sections */
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    overflow-y: hidden !important;
     border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
     box-sizing: border-box;
-    /* Force sections to start at top */
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    vertical-align: top;
+    vertical-align: top !important;
+    position: relative !important;
+    scroll-margin-top: 0 !important;
+    scroll-margin-bottom: 0 !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   /* Notebook Page - Mobile Responsive */
   #landing .notebook-page {
-    position: fixed;
+  position: fixed;
     top: 50%;
     right: 0;
     transform: translateY(-50%) translateX(100%); /* Hidden by default on mobile */
@@ -1464,91 +1663,132 @@ footer p {
     display: inline-block !important;
   }
 
-  /* Content elements: inside background container, positioned with flexbox */
-  .landing-content,
-  .about-me-window {
-    position: relative !important; /* Relative to .landing flex container */
-    order: 1; /* Control stacking order */
+  /* Content elements: anchored on top of background, scale correctly on mobile */
+  /* First page windows show title bar by default, toggle full window on click */
+  #landing .landing-content,
+  #landing .about-me-window {
+    position: relative !important; /* Anchored to background section */
+    order: 1; /* Can appear in any order - can overlap */
     width: 100% !important;
-    max-width: 85% !important; /* Responsive width */
+    max-width: 85% !important; /* Responsive width - scales correctly */
     margin: 0 !important; /* No margin, use gap instead */
-    max-height: none !important; /* Allow natural height */
-    height: auto;
-    z-index: 10 !important; /* Above background */
+    max-height: none !important; /* Full height when active */
+    height: 22px !important; /* Title bar height by default */
+    z-index: 10 !important; /* Above background (z-index: 1) - stays on top */
     padding: 0;
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
     overflow: hidden;
-    box-sizing: border-box;
-    /* Flex properties - inside background container */
+    box-sizing: border-box !important;
+    /* Flex properties - anchored inside background container */
     flex-shrink: 0;
     flex-grow: 0;
     align-self: center; /* Center within flex container */
     /* Prevent overflow */
     overflow-x: hidden !important;
     min-width: 0;
+    /* Smooth transition for show/hide */
+    transition: height 0.3s ease, max-height 0.3s ease !important;
   }
 
-  /* Relearning windows: inside background container, positioned with flexbox */
+  /* Force windows to always be open when active - remove minimized state */
+  #landing .landing-content.minimized,
+  #landing .about-me-window.minimized {
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  #landing .landing-content.minimized .landing-text-wrapper,
+  #landing .about-me-window.minimized .landing-text-wrapper {
+    display: block !important; /* Always show content when active */
+  }
+
+  /* Relearning windows: anchored on top of background, scale correctly on mobile */
   .relearning-window,
   .relearning-hear-window {
-    position: relative !important; /* Relative to .landing flex container */
+    position: relative !important; /* Anchored to background section */
     order: 1; /* Control stacking order */
     width: 100% !important;
-    max-width: 85% !important; /* Responsive width */
+    max-width: 85% !important; /* Responsive width - scales correctly */
     margin: 0 !important; /* No margin, use gap instead */
-    max-height: none !important; /* Allow natural height */
-    height: auto;
-    z-index: 10 !important; /* Above background */
+    max-height: none !important; /* Always full height - no minimize */
+    height: auto !important; /* Natural height */
+    z-index: 10 !important; /* Above background (z-index: 1) - stays on top */
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
     overflow: hidden;
-    box-sizing: border-box;
-    /* Flex properties - inside background container */
+    box-sizing: border-box !important;
+    /* Flex properties - anchored inside background container */
     flex-shrink: 0;
     flex-grow: 0;
     align-self: center; /* Center within flex container */
     /* Prevent overflow */
     overflow-x: hidden !important;
     min-width: 0;
+    /* Disable minimize state on mobile */
+    transition: none !important; /* No transitions for dragging */
   }
 
-  /* Social window: inside background container, positioned with flexbox */
-  .social-window {
-    position: relative !important; /* Relative to .landing flex container */
-    order: 2; /* Appears after content windows */
+  /* Force relearning windows to always be open on mobile */
+  .relearning-window.minimized,
+  .relearning-hear-window.minimized {
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .relearning-window.minimized .landing-text-wrapper,
+  .relearning-hear-window.minimized .landing-text-wrapper {
+    display: block !important; /* Always show content */
+  }
+
+  /* Social window: anchored on top of background, scale correctly on mobile */
+  /* Last.fm window always open on mobile with increased height for 10 items */
+  /* High z-index to stay above other sections' backgrounds */
+  #landing .social-window,
+  #landing .social-window:not(.window-active),
+  #landing .social-window.window-active,
+  #landing .social-window.minimized {
+    position: relative !important;
+    order: 1;
     width: 100% !important;
-    max-width: 70% !important; /* Responsive width */
-    margin: 0 !important; /* No margin, use gap instead */
-    max-height: 250px !important; /* Constrained height for mobile */
-    height: auto;
-    z-index: 10 !important; /* Above background */
+    max-width: 70% !important;
+    margin: 0 !important;
+    max-height: 400px !important; /* Increased height to show 10 items */
+    height: auto !important; /* Always open on mobile */
+    z-index: 100 !important; /* High z-index to stay above other sections */
     backdrop-filter: blur(6px);
     background-color: rgba(20, 20, 20, 0.35);
     border-radius: 8px;
     overflow: hidden;
-    box-sizing: border-box;
-    /* Flex properties - inside background container */
+    box-sizing: border-box !important;
     flex-shrink: 1;
     flex-grow: 0;
-    align-self: center; /* Center within flex container */
-    /* Prevent overflow */
+    align-self: center;
     overflow-x: hidden !important;
     min-width: 0;
+    transition: none !important;
+  }
+
+  /* Force social window content to always be visible */
+  #landing .social-window .social-content,
+  #landing .social-window:not(.window-active) .social-content,
+  #landing .social-window.window-active .social-content,
+  #landing .social-window.minimized .social-content {
+    display: block !important;
   }
 
   .social-content {
-    max-height: 150px !important; /* Very small for mobile */
+    max-height: 350px !important; /* Increased to show 10 items */
     overflow-y: auto;
   }
 
   .lastfm-content {
-    max-height: 120px !important; /* Very small for mobile */
+    max-height: 320px !important; /* Increased to show 10 items */
     overflow-y: auto;
-    padding: 8px !important; /* Reduced padding */
-    font-size: 9px !important; /* Smaller text */
+    padding: 8px !important;
+    font-size: 9px !important;
   }
 
   /* Make Last.fm text smaller on mobile */
@@ -1593,18 +1833,19 @@ footer p {
     padding: 0;
   }
 
-  /* Enter noise journal button: inside background container, positioned with flexbox */
+  /* Enter noise journal button: inside background container, positioned at bottom on mobile */
   #enter-noise-journal {
-    position: relative !important; /* Relative to .landing flex container */
-    order: 1; /* Control stacking order */
-    z-index: 15 !important; /* Above background */
+    position: relative !important;
+    order: 999 !important; /* Move to bottom */
+    z-index: 15 !important;
     max-width: calc(100% - 40px) !important;
     width: auto !important;
-    margin: 0 !important; /* No margin, use gap instead */
+    margin: auto auto 20px auto !important; /* Push to bottom with bottom margin */
     font-size: 18px !important;
     padding: 10px 16px;
-    align-self: flex-start; /* Align to left side */
+    align-self: center !important; /* Center horizontally */
     flex-shrink: 0;
+    margin-top: auto !important; /* Push to bottom of flex container */
   }
 
   /* Text elements: smaller sizing for mobile */
@@ -1759,7 +2000,7 @@ footer p {
   }
 
   figure.photo img {
-    width: 100%;
+  width: 100%;
     max-width: 100%;
     height: auto;
     object-fit: contain;
@@ -1784,10 +2025,10 @@ footer p {
     padding: 30px 20px;
   }
 
-  /* Enter Noise Journal Button - Mobile (Anchored to container) */
+  /* Enter Noise Journal Button - Mobile (Anchored to container, bottom of page) */
   #enter-noise-journal {
-    position: relative !important; /* Relative to parent container */
-    order: 1; /* Control stacking order */
+    position: relative !important;
+    order: 999 !important; /* Move to bottom */
     left: auto !important;
     right: auto !important;
     top: auto !important;
@@ -1796,9 +2037,10 @@ footer p {
     font-size: 20px;
     padding: 10px 16px;
     z-index: 10;
-    margin: 10px auto !important; /* Center horizontally */
-    align-self: flex-start; /* Align to left side */
+    margin: auto auto 20px auto !important; /* Push to bottom with bottom margin */
+    align-self: center !important; /* Center horizontally */
     flex-shrink: 0;
+    margin-top: auto !important; /* Push to bottom of flex container */
   }
 
   #enter-noise-journal:hover,
@@ -1905,43 +2147,67 @@ footer p {
     overflow: hidden;
   }
 
-  /* Small mobile: landing section - flex container for elements */
+  /* Small mobile: ALL landing sections - exactly 100vh, no gaps */
   .landing {
-    position: relative;
+    position: relative !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
     align-items: center !important;
     padding: 12px 8px !important; /* Slightly less padding on small screens */
-    margin: 0 !important;
-    height: 100vh !important;
+    margin: 0 !important; /* No top/bottom margins - eliminate white gaps */
+    height: 100vh !important; /* Exactly 100% of viewport height */
     min-height: 100vh !important;
     max-height: 100vh !important;
     gap: 12px !important; /* Slightly smaller gap on small screens */
     overflow-y: auto !important;
     overflow-x: hidden !important;
     z-index: 2;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
+    border: none !important; /* No borders */
+    /* Ensure no gaps */
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
   }
 
-  /* Small mobile: background container unchanged */
+  /* Small mobile: ALL background containers - exactly 100vh, cover scaling */
   .landing-background {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
     width: 100% !important;
-    height: 100vh !important;
+    height: 100vh !important; /* Exactly 100% of viewport height */
     min-height: 100vh !important;
     max-height: 100vh !important;
     z-index: 1;
-    overflow: hidden;
-    margin: 0 !important;
-    padding: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important; /* No margins - eliminate gaps */
+    padding: 0 !important; /* No padding - eliminate gaps */
+    border: none !important;
   }
 
-  /* Small mobile: content elements - anchored with flexbox */
+  /* Small mobile: ALL background images - cover and center */
+  .landing-background img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* Cover scaling - fills entire section */
+    object-position: center center !important; /* Center the image */
+    transform: none !important; /* No rotation on small mobile */
+    display: block !important;
+    image-rendering: auto;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Small mobile: content elements - static, always open */
   .landing-content,
   .about-me-window {
     position: relative !important;
@@ -1949,17 +2215,42 @@ footer p {
     width: 100% !important;
     margin: 0 auto !important;
     max-height: none !important;
+    height: auto !important; /* Always full height */
     z-index: 10 !important;
+    transition: none !important; /* No transitions */
   }
 
-  /* Small mobile: social window - anchored with flexbox */
+  /* Force windows open on small mobile */
+  .landing-content.minimized,
+  .about-me-window.minimized {
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .landing-content.minimized .landing-text-wrapper,
+  .about-me-window.minimized .landing-text-wrapper {
+    display: block !important;
+  }
+
+  /* Small mobile: social window - static, always open */
   .social-window {
     position: relative !important;
     max-width: 85% !important;
     width: 100% !important;
     margin: 0 auto !important;
     max-height: 200px !important;
+    height: auto !important;
     z-index: 10 !important;
+    transition: none !important; /* No transitions */
+  }
+
+  .social-window.minimized {
+    height: auto !important;
+    max-height: 200px !important;
+  }
+
+  .social-window.minimized .social-content {
+    display: block !important;
   }
 
   .relearning-window,
@@ -1969,7 +2260,20 @@ footer p {
     width: 100% !important;
     margin: 0 auto !important;
     max-height: none !important;
+    height: auto !important; /* Always full height */
     z-index: 10 !important;
+    transition: none !important; /* No transitions */
+  }
+
+  .relearning-window.minimized,
+  .relearning-hear-window.minimized {
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .relearning-window.minimized .landing-text-wrapper,
+  .relearning-hear-window.minimized .landing-text-wrapper {
+    display: block !important;
   }
 
   /* Small mobile: Last.fm content even smaller */
